@@ -1,6 +1,4 @@
 import json
-
-import schedule
 import time
 from django.shortcuts import render
 import requests

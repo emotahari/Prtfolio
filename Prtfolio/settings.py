@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'getdata.apps.GetdataConfig',
-    'django_celery_beat',
-    'schedule',
+    # 'django_celery_beat',
+    # 'schedule',
 ]
 
 MIDDLEWARE = [
