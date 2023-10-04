@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+
 class Stocks(models.Model):
     date = models.DateTimeField(auto_now_add= True)
     source = models.CharField(max_length = 50, verbose_name='', blank=True, null=True)
@@ -57,3 +58,6 @@ class Price(models.Model):
     tg = models.CharField(max_length = 30, verbose_name='', blank=True, null=True)
     ten = models.CharField(max_length = 30, verbose_name='', blank=True, null=True)
     ts = models.CharField(max_length = 30, verbose_name='', blank=True, null=True)
+    createDate = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return  str(self.name)

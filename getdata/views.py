@@ -1,14 +1,16 @@
 import json
-import time
-from django.shortcuts import render
 import requests
+
+import threading, time
 from bs4 import BeautifulSoup
 from django.http import HttpResponse
+from timeloop import Timeloop
+from datetime import timedelta
+from getdata.models import Stocks, Price
 
-# Create your views here.
-from getdata.models import Stocks
+tl = Timeloop()
 
-# @schedule.repeat(schedule.every(1).minutes)
+
 def GetContent(request):
     data = []
     url = 'https://www.shakhesban.com/stocks/list-data?limit=1000&page=1&order_col=info.last_date&order_dir=desc&market=stock'
@@ -70,17 +72,46 @@ def GetContent(request):
         ,tradesBuyAndsellBuy_NVolume = objecti['content']['trades.buy_and_sell.Buy_N_Volume']
         ,tradesBuyAndSellSellIVolume = objecti['content']['trades.buy_and_sell.Sell_I_Volume']
         ,tradesBuyAndSellSellNVolume = objecti['content']['trades.buy_and_sell.Sell_N_Volume'])
-    # print( counttr,len(data))
     return HttpResponse(message)
-# schedule.every().day.at("16:58").do(GetContent)
 
+# ticker = threading.Event()
+# while not ticker.wait(wait_time):
+#     GetContent()
+
+#
 # while True:
-#     schedule.run_pending()
-#     time.sleep(1)
+#   GetContent()
+#   time.sleep(60)
+
 def GetGold(request):
     url = 'https://call2.tgju.org/ajax.json?rev=fgO31kgQ8Wzfn4cj8u0XV1aU4Vw6hXY1oexDqeJrzcD58XNLCNKwfiqBndJ3'
     content = requests.get(url)
-    print(content)
     json1 = json.loads(content.text)
-    print(json1)
-    return HttpResponse(json1)
+    data = json1['current']
+    for i in data:
+        row = data[i]
+        object = Price.objects.create(name = i
+                                    ,d = row['d']
+                                    ,dp = row['dp']
+                                    ,dt = row['dt']
+                                    ,h = row['h']
+                                    ,l = row['l']
+                                    ,p = row['p']
+                                    ,t = row['t']
+                                    ,tg = row['t-g']
+                                    ,ten = row['t_en']
+                                    ,ts = row['ts'])
+        # print(object)
+    return HttpResponse(data)
+
+
+def CalculatePrice(ind):
+    if ind == 'p' :
+        nimPrice = Price.objects.filter(name='nim')
+        print(nimPrice)
+        return  nimPrice
+
+def ShowPrice(request):
+    nim = CalculatePrice('p')
+    return HttpResponse(nim)
+

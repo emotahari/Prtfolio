@@ -6,4 +6,5 @@ from getdata import views
 urlpatterns = [
     path("", views.GetContent, name="get"),
     path("gold", views.GetGold, name="getgold"),
+    path("show", views.ShowPrice, name="show"),
 ]
